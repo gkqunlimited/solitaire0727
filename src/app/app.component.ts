@@ -1,75 +1,215 @@
 import { Component, OnInit } from '@angular/core';
-
+declare var $: any;
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
- 
-   // build deck
-  
-
-   // build stock pile
+export class AppComponent implements OnInit{
+       
    s:any;
-
-   // build waste pile
    w:any;
-
-   // build foundations
    spades:any;
    hearts:any;
    diamonds:any;
    clubs:any;
-
-   // build tableau
    t:any= [1,2,3,4,5,6,7];
-   
-   // build table
-   //table:string[];
-   
-   // build tableau
-  
-   
-
+ 
    // initial face up cards
-   playedCards =
+   playedCards:any =
        '#waste .card,' +
        '#fnd .card,' +
        '#tab .card:last-child';
+    // cache selectors
 
-   // cache selectors
+   $table:any = document.querySelector('#table');
+   $upper:any = document.querySelector('#table .upper-row');
+   $lower:any = document.querySelector('#table .lower-row');
+   $stock:any = document.querySelector('#stock');
+   $waste:any = document.querySelector('#waste');
+   $fnd:any = document.querySelector('#fnd');
+   $tab:any = document.querySelector('#tab');
+   unplayedTabCards: any = [];
 
-   $table = document.querySelector('#table');
-   $upper = document.querySelector('#table .upper-row');
-   $lower = document.querySelector('#table .lower-row');
-   $stock = document.querySelector('#stock');
-   $waste = document.querySelector('#waste');
-   $fnd = document.querySelector('#fnd');
-   $tab = document.querySelector('#tab');
-   unplayedTabCards = [];
+   deck:any = [
+       
+    {rnk:'A',sut: 'spade'},
+    {rnk:'2',sut: 'spade'},
+    {rnk:'3',sut: 'spade'},
+    {rnk:'4',sut: 'spade'},
+    {rnk:'5',sut: 'spade'},
+    {rnk:'6',sut: 'spade'},
+    {rnk:'7',sut: 'spade'},
+    {rnk:'8',sut: 'spade'},
+    {rnk:'9',sut: 'spade'},
+    {rnk:'10',sut: 'spade'},
+    {rnk:'J',sut: 'spade'},
+    {rnk:'Q',sut: 'spade'},
+    {rnk:'K',sut: 'spade'},
+    
+    {rnk:'A',sut: 'heart'},
+    {rnk:'2',sut: 'heart'},
+    {rnk:'3',sut: 'heart'},
+    {rnk:'4',sut: 'heart'},
+    {rnk:'5',sut: 'heart'},
+    {rnk:'6',sut: 'heart'},
+    {rnk:'7',sut: 'heart'},
+    {rnk:'8',sut: 'heart'},
+    {rnk:'9',sut: 'heart'},
+    {rnk:'10',sut: 'heart'},
+    {rnk:'J',sut: 'heart'},
+    {rnk:'Q',sut: 'heart'},
+    {rnk:'K',sut: 'heart'},
 
-  
+    {rnk:'A',sut: 'diamond'},
+    {rnk:'2',sut: 'diamond'},
+    {rnk:'3',sut: 'diamond'},
+    {rnk:'4',sut: 'diamond'},
+    {rnk:'5',sut: 'diamond'},
+    {rnk:'6',sut: 'diamond'},
+    {rnk:'7',sut: 'diamond'},
+    {rnk:'8',sut: 'diamond'},
+    {rnk:'9',sut: 'diamond'},
+    {rnk:'10',sut: 'diamond'},
+    {rnk:'J',sut: 'diamond'},
+    {rnk:'Q',sut: 'diamond'},
+    {rnk:'K',sut: 'diamond'},
+
+    {rnk:'A',sut: 'club'},
+    {rnk:'2',sut: 'club'},
+    {rnk:'3',sut: 'club'},
+    {rnk:'4',sut: 'club'},
+    {rnk:'5',sut: 'club'},
+    {rnk:'6',sut: 'club'},
+    {rnk:'7',sut: 'club'},
+    {rnk:'8',sut: 'club'},
+    {rnk:'9',sut: 'club'},
+    {rnk:'10',sut: 'club'},
+    {rnk:'J',sut: 'club'},
+    {rnk:'Q',sut: 'club'},
+    {rnk:'K',sut: 'club'}
+];   
 
    // 2. SHUFFLE DECK
-   deck:any = this.shuffle(this.deck);
+   ngOnInit() { 
+       var i = this.deck.length,
+           temp, rand;
+       // while there remain elements to shuffle
+       while (0 !== i) {
+           // pick a remaining element
+           rand = Math.floor(Math.random() * i);
+           i--;
+           // and swap it with the current element
+           temp = this.deck[i];
+           this.deck[i] = this.deck[rand];
+           this.deck[rand] = temp;
+       }
+       return this.deck;
+
+   };
+
 
    // 3. DEAL DECK
-   table:any = this.deal(this.deck, this.table);
-    emptyPiles: string;
-    clicks: any;
-    clickTimer: number;
-    clickDelay: any;
+   table:any = function deal(deck, table){
+        // move all cards to stock
+        table = [];
+        table['stock'] = this.s;
+        table['waste'] = this.w;
+        table['spades'] = this.spades;
+        table['hearts'] = this.hearts;
+        table['diamonds'] = this.diamonds;
+        table['clubs'] = this.clubs;
+        table['tab'] = this.t;
+        table['stock'] = deck;
+        // build tableau
+         var tabs = table['tab'];
+        // loop through 7 tableau rows
+        for (var row = 1; row <= 7; row++) {
+      // loop through 7 piles in row
+      for (var pile = row; pile <= 7; pile++) {
+          // build blank pile on first row
+          if (row === 1) tabs[pile] = [];
+          // deal card to pile
+          this.move(table['stock'], tabs[pile], false);
+      }
+         }
+        return table;
+
+     };
+    
 
    // 4. RENDER TABLE
-   
-   render(table, playedCards) {
+   render(table, playedCards, emptyPiles) {
     // check for played cards
-    playedCards = this.checkForPlayedCards(playedCards);
+    playedCards = function checkForPlayedCards(playedCards){
+        
+            // query
+            var els = document.querySelectorAll('.card[data-played="true"]');
+            var e;
+             for (e in els) { // loop through elements
+                e = els[e];
+                if (e.nodeType) {
+                    var r = e.dataset.rank;
+                    var s = e.dataset.suit;
+                    playedCards += ', .card[data-rank="' + r + '"][data-suit="' + s + '"]';
+                }
+            }
+            return playedCards;
+        };
+   
     // check for empty piles
-    this.emptyPiles = this.checkForEmptyPiles(table);
+    emptyPiles = function checkForEmptyPiles(table){
+       
+            // reset empty data on all piles
+            var els = document.querySelectorAll('.pile'); // query elements
+            var e;
+            for (e in els) { // loop through elements
+                e = els[e];
+                if (e.nodeType) {
+                    delete e.dataset.empty;
+                }
+            }
+            // declare var with fake pile so we always have one
+            emptyPiles = '#fake.pile';
+            // check spades pile
+            if (table['spades'].length === 0) {
+                emptyPiles += ', #fnd #spades.pile';
+            }
+            // check hearts pile
+            if (table['hearts'].length === 0) {
+                emptyPiles += ', #fnd #hearts.pile';
+            }
+            // check diamonds pile
+            if (table['diamonds'].length === 0) {
+                emptyPiles += ', #fnd #diamonds.pile';
+            }
+            // check clubs pile
+            if (table['clubs'].length === 0) {
+                emptyPiles += ', #fnd #clubs.pile';
+            }
+            // check tableau piles
+            var tabs = table['tab'];
+            // loop through tableau piles
+            for (var i = 1; i <= 7; i++) {
+                // check tabeau pile
+                if (tabs[i].length === 0) {
+                    emptyPiles += ', #tab li:nth-child(' + i + ').pile';
+                }
+            }
+            // mark piles as empty
+            els = document.querySelectorAll(emptyPiles); // query elements
+            var e;
+            for (e in els) { // loop through elements
+                e = els[e];
+                if (e.nodeType) {
+                    e.dataset.empty = 'true'; // mark as empty
+                }
+            }
+            return emptyPiles;
+     
+    };
     // update stock pile
-    this.update(table['stock'], '#stock ul', playedCards, true);
+    this.update(table['stock'] , '#stock ul', playedCards, true);
     // update waste pile
     this.update(table['waste'], '#waste ul', playedCards, null);
     // update spades pile
@@ -126,110 +266,6 @@ export class AppComponent {
    
 
    // ### FUNCTIONS ###
-  
-
-   // shuffle deck
-   shuffle(deck) {
-       // declare vars
-       deck = [
-       
-        ['A', 'spade'],
-        ['2', 'spade'],
-        ['3', 'spade'],
-        ['4', 'spade'],
-        ['5', 'spade'],
-        ['6', 'spade'],
-        ['7', 'spade'],
-        ['8', 'spade'],
-        ['9', 'spade'],
-        ['10', 'spade'],
-        ['J', 'spade'],
-        ['Q', 'spade'],
-        ['K', 'spade'],
-       
-        ['A', 'heart'],
-        ['2', 'heart'],
-        ['3', 'heart'],
-        ['4', 'heart'],
-        ['5', 'heart'],
-        ['6', 'heart'],
-        ['7', 'heart'],
-        ['8', 'heart'],
-        ['9', 'heart'],
-        ['10', 'heart'],
-        ['J', 'heart'],
-        ['Q', 'heart'],
-        ['K', 'heart'],
-   
-        ['A', 'diamond'],
-        ['2', 'diamond'],
-        ['3', 'diamond'],
-        ['4', 'diamond'],
-        ['5', 'diamond'],
-        ['6', 'diamond'],
-        ['7', 'diamond'],
-        ['8', 'diamond'],
-        ['9', 'diamond'],
-        ['10', 'diamond'],
-        ['J', 'diamond'],
-        ['Q', 'diamond'],
-        ['K', 'diamond'],
-    
-        ['A', 'club'],
-        ['2', 'club'],
-        ['3', 'club'],
-        ['4', 'club'],
-        ['5', 'club'],
-        ['6', 'club'],
-        ['7', 'club'],
-        ['8', 'club'],
-        ['9', 'club'],
-        ['10', 'club'],
-        ['J', 'club'],
-        ['Q', 'club'],
-        ['K', 'club']
-    ];
-       var i = deck.length,
-           temp, rand;
-       // while there remain elements to shuffle
-       while (0 !== i) {
-           // pick a remaining element
-           rand = Math.floor(Math.random() * i);
-           i--;
-           // and swap it with the current element
-           temp = deck[i];
-           deck[i] = deck[rand];
-           deck[rand] = temp;
-       }
-       return deck;
-   }
-
-   // deal deck
-   deal(deck, table) {
-       // move all cards to stock
-       table = [];
-       table['stock'] = this.s;
-       table['waste'] = this.w;
-       table['spades'] = this.spades;
-       table['hearts'] = this.hearts;
-       table['diamonds'] = this.diamonds;
-       table['clubs'] = this.clubs;
-       table['tab'] = this.t;
-       table['stock'] = deck;
-       // build tableau
-       var tabs = table['tab'];
-       // loop through 7 tableau rows
-       for (var row = 1; row <= 7; row++) {
-           // loop through 7 piles in row
-           for (var pile = row; pile <= 7; pile++) {
-               // build blank pile on first row
-               if (row === 1) tabs[pile] = [];
-               // deal card to pile
-               this.move(table['stock'], tabs[pile], false);
-           }
-       }
-       return table;
-   }
 
    // move card
    move(source, dest, pop, selectedCards = 1) {
@@ -250,9 +286,6 @@ export class AppComponent {
        }
        return;
    }
-
-   // render table
-   
 
    // update piles
    update(pile, selector, playedCards, append) {
@@ -332,70 +365,10 @@ export class AppComponent {
    }
 
    // check for played cards
-   checkForPlayedCards(playedCards) {
-       // query
-       var els = document.querySelectorAll('.card[data-played="true"]');
-       var e;
-        for (e in els) { // loop through elements
-           e = els[e];
-           if (e.nodeType) {
-               var r = e.dataset.rank;
-               var s = e.dataset.suit;
-               playedCards += ', .card[data-rank="' + r + '"][data-suit="' + s + '"]';
-           }
-       }
-       return playedCards;
-   }
+  
 
    // check for empty piles
-   checkForEmptyPiles(table) {
-       // reset empty data on all piles
-       var els = document.querySelectorAll('.pile'); // query elements
-       var e;
-       for (e in els) { // loop through elements
-           e = els[e];
-           if (e.nodeType) {
-               delete e.dataset.empty;
-           }
-       }
-       // declare var with fake pile so we always have one
-       var emptyPiles = '#fake.pile';
-       // check spades pile
-       if (table['spades'].length === 0) {
-           emptyPiles += ', #fnd #spades.pile';
-       }
-       // check hearts pile
-       if (table['hearts'].length === 0) {
-           emptyPiles += ', #fnd #hearts.pile';
-       }
-       // check diamonds pile
-       if (table['diamonds'].length === 0) {
-           emptyPiles += ', #fnd #diamonds.pile';
-       }
-       // check clubs pile
-       if (table['clubs'].length === 0) {
-           emptyPiles += ', #fnd #clubs.pile';
-       }
-       // check tableau piles
-       var tabs = table['tab'];
-       // loop through tableau piles
-       for (var i = 1; i <= 7; i++) {
-           // check tabeau pile
-           if (tabs[i].length === 0) {
-               emptyPiles += ', #tab li:nth-child(' + i + ').pile';
-           }
-       }
-       // mark piles as empty
-       els = document.querySelectorAll(emptyPiles); // query elements
-       var e;
-       for (e in els) { // loop through elements
-           e = els[e];
-           if (e.nodeType) {
-               e.dataset.empty = 'true'; // mark as empty
-           }
-       }
-       return emptyPiles;
-   }
+  
 
    // count played cards
    countPlayedCards(cards) {
@@ -547,11 +520,11 @@ export class AppComponent {
        if (rank && suit) var card = [rank, suit];
 
        // count clicks
-       this.clicks++;
+       clicks++;
 
        // single click
-       if (this.clicks === 1 && event.type === 'click') {
-           this.clickTimer = setTimeout(function() {
+       if (clicks === 1 && event.type === 'click') {
+           clickTimer = setTimeout(function() {
 
 
                // reset click counter
@@ -650,18 +623,18 @@ export class AppComponent {
                    }
                }
 
-           }, this.clickDelay);
+           }, clickDelay);
        }
 
        // double click
        else if (event.type === 'dblclick') {
 
-           clearTimeout(this.clickTimer); // prevent single click
-           this.clicks = 0; // reset click counter
+           clearTimeout(clickTimer); // prevent single click
+           clicks = 0; // reset click counter
            // select card
            e.dataset.selected = 'true';
            (this.$table as HTMLElement).dataset.move = 'true';
-           this.$table.dataset.selected = card;
+           (this.$table as HTMLElement).dataset.selected = card as any;
            (this.$table as HTMLElement).dataset.source = e.closest('.pile').dataset.pile;
            // get destination pile
            if (card) var dest = card[1] + 's';
@@ -672,12 +645,12 @@ export class AppComponent {
                // make move
                this.makeMove();
                this.reset(this.table);
-               this.render(this.table, this.playedCards);
+               this.render(this.table, this.playedCards,null);
                this.play(this.table);
            } else {
 
                this.reset(this.table);
-               this.render(this.table, this.playedCards);
+               this.render(this.table, this.playedCards,null);
                this.play(this.table);
 
            }
@@ -786,7 +759,7 @@ export class AppComponent {
        // if pulling card from waste pile
        if (source === 'waste') {
            // if moving card to foundation pile
-           if (isNaN(dest)) {
+           if (isNaN(dest as any)) {
 
                this.move(this.table[source], this.table[dest], true);
 
@@ -802,7 +775,7 @@ export class AppComponent {
        // if pulling card from foundation pile
        else if (['spades', 'hearts', 'diamonds', 'clubs'].indexOf(source) >= 0) {
            // only allow moves to tableau piles
-           if (isNaN(dest)) {
+           if (isNaN(dest as any)) {
 
                return false;
            }
@@ -818,7 +791,7 @@ export class AppComponent {
        else {
            // if moving card to foundation pile
            
-           if (isNaN(dest)) {
+           if (isNaN(dest as any)) {
 
                this.move(this.table['tab'][source], this.table[dest], true);
 
@@ -830,7 +803,7 @@ export class AppComponent {
                var selected = document.querySelector('.card[data-selected="true"');
                // get cards under selected card
                var selectedCards = [selected];
-               while (this.selected = selected['nextSibling']) {
+               while (selected = <HTMLScriptElement>selected['nextSibling']) {
                    if (selected.nodeType) selectedCards.push(selected);
                }
                // move card(s)
@@ -866,7 +839,7 @@ export class AppComponent {
    }
 
    // parse rank as integer
-   parseRankAsInt(rank) {
+   parseRankAsInt(rank):any {
        // assign numerical ranks to letter cards
        switch (rank) {
            case 'A':
@@ -925,4 +898,5 @@ export class AppComponent {
        delete (this.$tab as HTMLElement).dataset.unplayed;
 
    }
+   
 }

@@ -8,25 +8,25 @@
               <i class="reload-icon" data-action="reload">
             <span></span>
          </i>
-              <ul></ul>
+              <ul  *ngFor="let card of table['stock']"></ul>
           </div>
 
           <div id="waste" class="waste pile" data-pile="waste">
-              <ul></ul>
+              <ul  *ngFor="let card of table['waste']"></ul>
           </div>
 
           <ul id="fnd" class="fnd">
               <li id="spades" class="spades pile" data-pile="spades" data-empty="true">
-                  <ul></ul>
+                  <ul  *ngFor="let card of table['spades']"></ul>
               </li>
               <li id="hearts" class="hearts pile" data-pile="hearts" data-empty="true">
-                  <ul></ul>
+                  <ul  *ngFor="let card of table['hearts']"></ul>
               </li>
               <li id="diamonds" class="diamonds pile" data-pile="diamonds" data-empty="true">
-                  <ul></ul>
+                  <ul  *ngFor="let card of table['diamonds']"></ul>
               </li>
               <li id="clubs" class="clubs pile" data-pile="clubs" data-empty="true">
-                  <ul></ul>
+                  <ul  *ngFor="let card of table['clubs']"></ul>
               </li>
           </ul>
       </div>
@@ -34,25 +34,25 @@
       <div class="lower-row">
           <ul id="tab" class="tab">
               <li class="pile" data-pile="1">
-                  <ul></ul>
+                  <ul  *ngFor="let card of table['tab']"></ul>
               </li>
               <li class="pile" data-pile="2">
-                  <ul></ul>
+                  <ul  *ngFor="let card of table['tab']"></ul>
               </li>
               <li class="pile" data-pile="3">
-                  <ul></ul>
+                  <ul  *ngFor="let card of table['tab']"></ul>
               </li>
               <li class="pile" data-pile="4">
-                  <ul></ul>
+                  <ul  *ngFor="let card of table['tab']"></ul>
               </li>
               <li class="pile" data-pile="5">
-                  <ul></ul>
+                  <ul  *ngFor="let card of table['tab']"></ul>
               </li>
               <li class="pile" data-pile="6">
-                  <ul></ul>
+                  <ul  *ngFor="let card of table['tab']"></ul>
               </li>
               <li class="pile" data-pile="7">
-                  <ul></ul>
+                  <ul  *ngFor="let card of table['tab']"></ul>
               </li>
           </ul>
       </div>

@@ -5,7 +5,7 @@ html, body {
 body {
     position: relative;
     color: #f3f5f7;
-    background: #0e8b44 url('img/green_felt.jpg');
+    background: #0e8b44 url('../assets/green_felt.jpg');
     background-size: cover;
     background-position: center;
 }
@@ -83,7 +83,7 @@ body {
     top: 0;
     left: 0;
     background-color: #ddd;
-    background-image: url('img/card_back_bg.png');
+    background-image: url('../assets/card_back_bg.png');
     background-size: contain;
     background-repeat: no-repeat;
     width: 100%;
@@ -118,7 +118,7 @@ body {
     display: none;
 }
 .card.up {
-    background-image: url('img/card_face_bg.png');
+    background-image: url('../assets/card_face_bg.png');
     background-repeat: repeat;
     color: #111;
 }
@@ -227,40 +227,40 @@ body {
    }
 }
 .card .spade.king .face::before {
-    background-image: url('img/face-king-spade.png');
+    background-image: url('../assets/face-king-spade.png');
 }
 .card .spade.queen .face::before {
-    background-image: url('img/face-queen-spade.png');
+    background-image: url('../assets/face-queen-spade.png');
 }
 .card .spade.jack .face::before {
-    background-image: url('img/face-jack-spade.png');
+    background-image: url('../assets/face-jack-spade.png');
 }
 .card .heart.king .face::before {
-    background-image: url('img/face-king-heart.png');
+    background-image: url('../assets/face-king-heart.png');
 }
 .card .heart.queen .face::before {
-    background-image: url('img/face-queen-heart.png');
+    background-image: url('../assets/face-queen-heart.png');
 }
 .card .heart.jack .face::before {
-    background-image: url('img/face-jack-heart.png');
+    background-image: url('../assets/face-jack-heart.png');
 }
 .card .diamond.king .face::before {
-    background-image: url('img/face-king-diamond.png');
+    background-image: url('../assets/face-king-diamond.png');
 }
 .card .diamond.queen .face::before {
-    background-image: url('img/face-queen-diamond.png');
+    background-image: url('../assets/face-queen-diamond.png');
 }
 .card .diamond.jack .face::before {
-    background-image: url('img/face-jack-diamond.png');
+    background-image: url('../assets/face-jack-diamond.png');
 }
 .card .club.king .face::before {
-    background-image: url('img/face-king-club.png');
+    background-image: url('../assets/face-king-club.png');
 }
 .card .club.queen .face::before {
-    background-image: url('img/face-queen-club.png');
+    background-image: url('../assets/face-queen-club.png');
 }
 .card .club.jack .face::before {
-    background-image: url('img/face-jack-club.png');
+    background-image: url('../assets/face-jack-club.png');
 }
 .card .suit.top_center {
     left: 50%;
